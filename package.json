@@ -11,7 +11,8 @@
 		"start": "npm run start:client & npm run start:server",
 		"start:client": "npm --prefix client start",
 		"start:server": "npm --prefix server start",
-		"install": "npm install --prefix client && npm install --prefix server"
+		"install": "npm install --prefix client && npm install --prefix server",
+		"clean": "rm -rf node_modules client/node_modules server/node_modules"
 	},
 	"keywords": [],
 	"author": "",
