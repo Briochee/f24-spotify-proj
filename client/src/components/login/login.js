@@ -9,43 +9,42 @@ const Login = () => {
     const [lastName, setLastName] = useState("");
     const [isLogin, setIsLogin] = useState(true);
 
-    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     // Handle login
     const handleLogin = async (e) => {
         e.preventDefault();
-
+    
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/users/login`, {
-                email,
-                password,
-            });
-
-            // Navigate to homepage after successful login
-            navigate("/homepage");
-        } catch (err) {
-            const errorMessage =
-                err.response && err.response.data && err.response.data.message
-                    ? err.response.data.message
-                    : "Error: " + err.message;
-            alert("Login Failed: " + errorMessage);
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/login`,
+                { email, password }
+            );
+    
+            // console.log("Login response:", response.data);
+            localStorage.setItem("token", response.data.token); // Save token
+            navigate("/homepage"); // Redirect after successful login
+        } catch (error) {
+            console.error("Login failed:", error.response?.data || error.message);
         }
     };
 
     // Handle registration
     const handleRegister = async (e) => {
         e.preventDefault();
-
+    
         try {
-            const response = await axios.post(`${BACKEND_URL}/api/users/register`, {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/register`, {
                 email,
                 password,
                 firstName,
                 lastName,
             });
-
-            // Navigate to homepage after successful registration
+            const token = response.data.token;
+    
+            // Store the token in local storage
+            localStorage.setItem("token", token);
+    
+            // Navigate to the homepage after successful registration
             navigate("/homepage");
         } catch (err) {
             console.error("Registration Failed: ", err);

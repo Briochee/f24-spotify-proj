@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
 
 // website constants
-import NavDropdown from "./components/navigate/navigate.js";
+// import NavDropdown from "./components/navigate/navigate.js";
 
 // webpages
 import Login from "./components/login/login.js";

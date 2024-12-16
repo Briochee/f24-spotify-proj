@@ -6,20 +6,37 @@ const SpotifyCallback = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get("code");
+        const handleSpotifyCallback = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get("code");
+            const token = localStorage.getItem("token");
 
-        if (code) {
-            axios.post("http://localhost:5000/api/spotify/spotify-callback", { code })
-                .then((response) => {
-                    console.log("Spotify connected:", response.data);
-                    // Optionally, save the tokens in local storage or state
-                    navigate("/homepage"); // Redirect back to the homepage
-                })
-                .catch((error) => {
-                    console.error("Failed to connect to Spotify:", error);
-                });
-        }
+            if (code && token) {
+                try {
+                    await axios.post(
+                        `${process.env.REACT_APP_BACKEND_URL}/api/spotify/spotify-callback`,
+                        { code },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            },
+                        }
+                    );
+        
+                    const newUrl = window.location.href.split("?")[0];
+                    window.history.replaceState({}, document.title, newUrl);
+
+                    navigate("/homepage");
+                } catch (error) {
+                    console.error("Failed to connect to Spotify:", error.response?.data || error.message);
+                }
+            } else {
+                console.error("Missing authorization code or token");
+                // navigate("/login");
+            }
+        };
+
+        handleSpotifyCallback();
     }, []);
 
     return <div>Connecting to Spotify...</div>;
