@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import axios from 'axios';
 
 // Register a user
 export const registerUser = async (req, res) => {
@@ -19,9 +20,17 @@ export const registerUser = async (req, res) => {
         }
 
         const user = await User.create({ email, password, firstName, lastName });
+
+        // Generate a token for the new user
+        const token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
         res.status(201).json({
             message: "User registered successfully",
-            userId: user._id,
+            token,
         });
     } catch (error) {
         console.error("Error in registerUser:", error);
@@ -32,38 +41,89 @@ export const registerUser = async (req, res) => {
 // Login a user
 export const loginUser = async (req, res) => {
     try {
-        if (!mongoose.connection.readyState) {
-            throw new Error("No MongoDB connection");
-        }
-
         const { email, password } = req.body;
 
-        // Check if all required fields are provided
-        if (!email || !password) {
-            return res.status(400).json({ message: "Email and password are required" });
-        }
-
-        // Find the user by email
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
 
-        // Check the password
         if (user.password !== password) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // Generate a JWT token (add your JWT logic here)
-        const token = jwt.sign(
-            { id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        );
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         res.json({ message: "Login successful", token });
     } catch (error) {
-        console.error("Database operation failed:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
+        console.error("Error during login:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const validateUsername = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findOne({ email });
+        // revalidate Spotify username here if needed
+        if (user.spotifyConnected) {
+            try {
+                const profileResponse = await axios.get("https://api.spotify.com/v1/me", {
+                    headers: {
+                        Authorization: `Bearer ${user.spotifyAccessToken}`, // Use stored access token
+                    },
+                });
+
+                const spotifyUsername = profileResponse.data.display_name;
+                if (user.spotifyUsername !== spotifyUsername) {
+                    user.spotifyUsername = spotifyUsername;
+                    await user.save();
+                }
+            } catch (spotifyError) {
+                console.error("Failed to validate Spotify username:", spotifyError.message);
+            }
+        }
+    } catch (error) {
+        console.error("Could not validate Spotify username: ", error);
+    }
+};
+
+// Check if a user is connected to Spotify
+export const isSpotifyConnected = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the user in the database
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Return the Spotify connection status
+        res.json({ connected: user.spotifyConnected });
+    } catch (error) {
+        console.error("Error checking Spotify connection:", error.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Set connection status on user profile
+export const setStatus = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { connection } = req.body;
+
+        // Find the user in the database
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.spotifyConnected = connection;
+        await user.save();
+
+    } catch (error) {
+        console.error("Error checking Spotify connection:", error.message);
+        res.status(500).json({ message: "Internal server error" });
     }
 };
