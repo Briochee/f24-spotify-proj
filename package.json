@@ -26,6 +26,7 @@
 		"@testing-library/user-event": "^13.5.0",
 		"axios": "^1.7.9",
 		"body-parser": "^1.20.3",
+		"buffer-equal-constant-time": "^1.0.1",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
