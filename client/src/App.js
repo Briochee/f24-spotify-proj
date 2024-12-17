@@ -7,7 +7,6 @@ import './App.css';
 // webpages
 import Login from "./components/login/login.js";
 import Home from "./components/homepage/homepage.js";
-import Callback from "./components/callback/callback.js";
 import Quiz from "./components/quiz/quiz.js";
 import Profile from "./components/profile/profile.js";
 
@@ -19,7 +18,6 @@ function App() {
                   <Routes>
                       <Route path="/login" element={<Login />} />
                       <Route path="/homepage" element={<Home />} />
-                      <Route path="/spotify-callback" element={<Callback />} />
                       <Route path="/quiz" element={<Quiz />} />
                       <Route path="/profile" element={<Profile />} />
                   </Routes>
