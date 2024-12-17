@@ -111,9 +111,10 @@ export const setStatus = async (req, res) => {
     }
 };
 
+// Delete account
 export const deleteUserAccount = async (req, res) => {
     try {
-        const userId = req.user.id; // Authenticated user's ID
+        const userId = req.user.id;
         const { password } = req.body;
 
         if (!password) {
@@ -138,5 +139,77 @@ export const deleteUserAccount = async (req, res) => {
     } catch (error) {
         console.error("Error deleting user account:", error.message);
         return res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
+
+// Update Quiz History
+export const updateQuizHistory = async (req, res) => {
+    try {
+        const userId = req.user.id; // Assumes middleware authenticates and attaches `user.id`
+        const { quizzesTaken = 0, questionsAnswered = 0, lifetimeScore = 0, correctAnswers = 0, incorrectAnswers = 0 } = req.body;
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Update quiz history values
+        user.quizHistory.quizzesTaken += quizzesTaken;
+        user.quizHistory.questionsAnswered += questionsAnswered;
+        user.quizHistory.lifetimeScore += lifetimeScore;
+        user.quizHistory.correctAnswers += correctAnswers;
+        user.quizHistory.incorrectAnswers += incorrectAnswers;
+
+        await user.save();
+
+        return res.json({ message: "Quiz history updated successfully", quizHistory: user.quizHistory });
+    } catch (error) {
+        console.error("Error updating quiz history:", error.message);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Get Quiz History
+export const getQuizHistory = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.json({ quizHistory: user.quizHistory });
+    } catch (error) {
+        console.error("Error retrieving quiz history:", error.message);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Get User Info
+export const getUserInfo = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Extract user information
+        const userInfo = {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            spotifyUsername: user.spotifyUsername || "Not connected",
+        };
+
+        return res.json({ userInfo });
+    } catch (error) {
+        console.error("Error retrieving user info:", error.message);
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
