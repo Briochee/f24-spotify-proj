@@ -1,0 +1,9 @@
+.gamebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1DB954;
+    color: white;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
