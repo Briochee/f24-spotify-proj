@@ -104,7 +104,7 @@ export const verifyConnection = async (req, res) => {
         if (obtainedAt && new Date(obtainedAt) < oneHourAgo) {
             console.log("Access token expired. Refreshing...");
 
-            // Validate the new token by making a test call to Spotify
+            // Refresh the access token
             let refreshedToken;
             try {
                 refreshedToken = await refreshAccessToken(user);
@@ -115,7 +115,11 @@ export const verifyConnection = async (req, res) => {
                 console.error("Token refresh failed:", refreshError.message);
                 return res.status(401).json({ connected: false, message: "Token refresh failed." });
             }
-            return res.json({ connected: true, message: "Spotify connection verified, tokens refreshed" });
+            return res.json({
+                connected: true,
+                refreshed: true,
+                message: "Spotify connection verified, tokens refreshed.",
+            });
         }
 
         // Test current access token validity
@@ -123,9 +127,13 @@ export const verifyConnection = async (req, res) => {
             headers: { Authorization: `Bearer ${token}` },
         });
 
-        res.json({ connected: true, message: "Spotify connection verified." });
+        res.json({
+            connected: true,
+            refreshed: false,
+            message: "Spotify connection verified.",
+        });
     } catch (error) {
-        console.error("Spotify connection verification failed:", error);
+        console.error("Spotify connection verification failed:", error.message);
         res.status(401).json({ connected: false, message: "Spotify connection invalid." });
     }
 };
