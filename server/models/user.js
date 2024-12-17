@@ -26,6 +26,13 @@ const userSchema = new mongoose.Schema({
     spotifyRefreshToken: {
         type: String, default: null 
     },
+    quizHistory: {
+        quizzesTaken: { type: Number, default: 0},
+        questionsAnswered: { type: Number, default: 0},
+        lifetimeScore: { type: Number, default: 0},
+        correctAnswers: { type: Number, default: 0},
+        incorrectAnswers: { type: Number, default: 0},
+    }
 });
 
 const User = mongoose.model("User", userSchema);
