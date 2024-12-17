@@ -203,7 +203,7 @@ const Homepage = () => {
                 {!isSpotifyConnected ? (
                     <button onClick={handleConnectSpotify}>Connect Your Spotify Account</button>
                 ) : (
-                    <button onClick={() => navigate("/quiz")}>Song Quiz</button>
+                    <button onClick={() => navigate("/quiz-options")}>Song Quiz</button>
                 )}
             </div>
         </>
