@@ -10,10 +10,10 @@ export const protect = (req, res, next) => {
         req.user = decoded;
         next();
         } catch (error) {
-        res.status(401).json({ message: "Unauthorized, token failed" });
+        res.status(401).json({ message: "Unauthorized, session token failed" });
         }
     } else {
-        res.status(401).json({ message: "Unauthorized, no token" });
+        res.status(401).json({ message: "Unauthorized, no session token found" });
     }
 };
 

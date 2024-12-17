@@ -61,33 +61,6 @@ export const loginUser = async (req, res) => {
     }
 };
 
-export const validateUsername = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const user = await User.findOne({ email });
-        // revalidate Spotify username here if needed
-        if (user.spotifyConnected) {
-            try {
-                const profileResponse = await axios.get("https://api.spotify.com/v1/me", {
-                    headers: {
-                        Authorization: `Bearer ${user.spotifyAccessToken}`, // Use stored access token
-                    },
-                });
-
-                const spotifyUsername = profileResponse.data.display_name;
-                if (user.spotifyUsername !== spotifyUsername) {
-                    user.spotifyUsername = spotifyUsername;
-                    await user.save();
-                }
-            } catch (spotifyError) {
-                console.error("Failed to validate Spotify username:", spotifyError.message);
-            }
-        }
-    } catch (error) {
-        console.error("Could not validate Spotify username: ", error);
-    }
-};
-
 // Check if a user is connected to Spotify
 export const isSpotifyConnected = async (req, res) => {
     try {
@@ -101,10 +74,11 @@ export const isSpotifyConnected = async (req, res) => {
 
         // Check if the user is connected to Spotify
         if (user.spotifyConnected) {
+            // console.log("USER CONNECTED");
             // Return connection status along with access and refresh tokens
             return res.json({
                 connected: true,
-                accessToken: user.spotifyAccessToken?.token || null,
+                accessToken: user.spotifyAccessToken || null,
                 refreshToken: user.spotifyRefreshToken || null,
             });
         }
