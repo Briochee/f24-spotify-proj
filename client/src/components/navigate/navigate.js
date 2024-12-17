@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import "./navigate.css";
 
 const NavDropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
 
     const handleLogout = useCallback(() => {
         localStorage.removeItem("token");
@@ -37,23 +42,25 @@ const NavDropdown = () => {
     }, [checkTokenValidity]);
 
     return (
-        <div className="nav-dropdown">
-            {/* Dropdown button */}
-            <button
-                className="nav-button"
-                onClick={() => setIsOpen((prev) => !prev)}
-            >
-                Menu
-            </button>
-
-            {/* Dropdown menu */}
-            {isOpen && (
-                <div className="dropdown-menu">
-                    <button onClick={() => navigate("/homepage")}>Home</button>
-                    <button onClick={() => navigate("/profile")}>Profile</button>
-                    <button onClick={handleLogout}>Logout</button>
+        <div className="navbar">
+            <div className="title" onClick={() => navigate("/homepage")}>
+                SUBSONIC
+            </div>
+            <div className="menu-portion">
+                <div className={`menu ${isOpen ? "open" : ""}`}>
+                    <ul>
+                        <li><button onClick={() => navigate("/homepage")}>Home</button></li>
+                        <li><button onClick={() => navigate("/profile")}>Profile</button></li>
+                        <li><button onClick={handleLogout}>Log Out</button></li>
+                    </ul>
                 </div>
-            )}
+                <div className="hamburger" onClick={toggleMenu}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
         </div>
     );
 };
