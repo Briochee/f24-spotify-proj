@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getUserPlaylists, getPlaylistTracks } from "../spotify/spotifyFunctions.js";
 import NavDropdown from "../navigate/navigate.js";
 
 const QuizOptions = () => {
-    const [playlists, setPlaylists] = useState([]); // List of playlists
-    const [validPlaylists, setValidPlaylists] = useState([]); // Playlists with >= 10 tracks
-    const [selectedPlaylist, setSelectedPlaylist] = useState(null); // Chosen playlist
-    const [trackCount, setTrackCount] = useState(0); // Track count of selected playlist
-    const [quizSizeOptions, setQuizSizeOptions] = useState([]); // Available quiz sizes
+    const [playlists, setPlaylists] = useState([]);
+    const [validPlaylists, setValidPlaylists] = useState([]);
+    const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+    const [trackCount, setTrackCount] = useState(0);
+    const [quizSizeOptions, setQuizSizeOptions] = useState([]);
+    const [selectedSize, setSelectedSize] = useState(null); // Fix: Added selectedSize state
+    const [difficulty, setDifficulty] = useState("easy");
 
     const QUIZ_SIZES = [10, 25, 50, 100];
+    const DIFFICULTY_OPTIONS = ["easy", "medium", "hard"];
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchPlaylists();
@@ -27,23 +33,30 @@ const QuizOptions = () => {
     };
 
     const handlePlaylistSelect = async (playlist) => {
-        let totalTracks = playlist.totalTracks; // Check if totalTracks already exists
-    
+        let totalTracks = playlist.totalTracks;
+
         if (!totalTracks) {
-            totalTracks = await getPlaylistTracks(playlist.id); // Fetch totalTracks dynamically
+            totalTracks = await getPlaylistTracks(playlist.id);
         }
-    
+
         if (totalTracks < 10) {
             console.error("Playlist must have at least 10 songs.");
             return;
         }
-    
+
         setSelectedPlaylist({ ...playlist, totalTracks });
         setTrackCount(totalTracks);
-    
-        // Determine available quiz sizes
+
         const availableSizes = QUIZ_SIZES.filter((size) => size <= totalTracks);
         setQuizSizeOptions(availableSizes);
+    };
+
+    const handleStartQuiz = () => {
+        if (selectedPlaylist && selectedSize) {
+            navigate(
+                `/quiz?playlistId=${selectedPlaylist.id}&quizSize=${selectedSize}&difficulty=${difficulty}`
+            );
+        }
     };
 
     return (
@@ -51,8 +64,6 @@ const QuizOptions = () => {
             <NavDropdown />
             <div className="container">
                 <h1>Choose a Playlist</h1>
-
-                {/* Playlists */}
                 {validPlaylists.length > 0 ? (
                     <div>
                         {playlists.map((playlist) => {
@@ -69,7 +80,6 @@ const QuizOptions = () => {
                                     >
                                         {playlist.name}
                                     </button>
-                                    {!isValid}
                                 </div>
                             );
                         })}
@@ -80,21 +90,40 @@ const QuizOptions = () => {
 
                 {/* Quiz Size Options */}
                 {selectedPlaylist && (
-                    <div>
+                    <>
                         <h2>Select Quiz Size</h2>
-                        {QUIZ_SIZES.map((size) => (
+                        {quizSizeOptions.map((size) => (
                             <button
                                 key={size}
-                                disabled={!quizSizeOptions.includes(size)}
+                                onClick={() => setSelectedSize(size)}
                                 style={{
-                                    color: quizSizeOptions.includes(size) ? "black" : "gray",
-                                    cursor: quizSizeOptions.includes(size) ? "pointer" : "not-allowed",
+                                    fontWeight: selectedSize === size ? "bold" : "normal",
                                 }}
                             >
                                 {size} Songs
                             </button>
                         ))}
-                    </div>
+                    </>
+                )}
+
+                {/* Difficulty Selection */}
+                {selectedSize && (
+                    <>
+                        <h2>Select Difficulty</h2>
+                        {DIFFICULTY_OPTIONS.map((level) => (
+                            <button
+                                key={level}
+                                onClick={() => setDifficulty(level)}
+                                style={{
+                                    fontWeight: difficulty === level ? "bold" : "normal",
+                                }}
+                            >
+                                {level.charAt(0).toUpperCase() + level.slice(1)}
+                            </button>
+                        ))}
+                        <br />
+                        <button onClick={handleStartQuiz}>Start Quiz</button>
+                    </>
                 )}
             </div>
         </>
