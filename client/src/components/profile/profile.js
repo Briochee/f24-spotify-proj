@@ -56,6 +56,46 @@ const Profile = () => {
         }
     };
 
+    const handleDisconnectSpotify = async () => {
+        const confirmDisconnect = window.confirm(
+            "Are you sure you want to disconnect your Spotify account?"
+        );
+        if (!confirmDisconnect) return;
+
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("You must be logged in.");
+                navigate("/login");
+                return;
+            }
+
+            // Call the backend API to disconnect Spotify
+            const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND_URL}/api/spotify/disconnect`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.data.message) {
+                alert("Spotify account disconnected successfully.");
+                // Clear Spotify tokens from localStorage
+                localStorage.removeItem("spotifyTokens");
+                navigate("/profile");
+            }
+        } catch (error) {
+            console.error("Error disconnecting Spotify:", error.response?.data || error.message);
+            alert("Failed to disconnect Spotify account. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div>
             <NavDropdown />
@@ -63,6 +103,9 @@ const Profile = () => {
                 <h1>Profile</h1>
                 <button onClick={handleDeleteAccount} disabled={loading}>
                     {loading ? "Deleting Account..." : "Delete Account"}
+                </button>
+                <button onClick={handleDisconnectSpotify} disabled={loading}>
+                    {loading ? "Disconnecting Spotify..." : "Disconnect Spotify"}
                 </button>
             </div>
         </div>
