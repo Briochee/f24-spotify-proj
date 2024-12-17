@@ -99,8 +99,18 @@ export const isSpotifyConnected = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Return the Spotify connection status
-        res.json({ connected: user.spotifyConnected });
+        // Check if the user is connected to Spotify
+        if (user.spotifyConnected) {
+            // Return connection status along with access and refresh tokens
+            return res.json({
+                connected: true,
+                accessToken: user.spotifyAccessToken?.token || null,
+                refreshToken: user.spotifyRefreshToken || null,
+            });
+        }
+
+        // If not connected, only return connected status as false
+        res.json({ connected: false });
     } catch (error) {
         console.error("Error checking Spotify connection:", error.message);
         res.status(500).json({ message: "Internal server error" });
@@ -110,20 +120,19 @@ export const isSpotifyConnected = async (req, res) => {
 // Set connection status on user profile
 export const setStatus = async (req, res) => {
     try {
-        const userId = req.user.id;
-        const { connection } = req.body;
-
-        // Find the user in the database
-        const user = await User.findById(userId);
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
+        const { connection } = req.body;
+        if (typeof connection !== "boolean") {
+            return res.status(400).json({ message: "Invalid connection status" });
+        }
         user.spotifyConnected = connection;
         await user.save();
-
+        res.json({ message: "Status updated successfully" });
     } catch (error) {
-        console.error("Error checking Spotify connection:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error in setStatus:", error.message);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };

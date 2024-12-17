@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
         type: String, default: null 
     },
     spotifyAccessToken: {
-        type: String, default: null 
+        token: { type: String, default: null },
+        obtainedAt: { type: Date, default: null },
     },
     spotifyRefreshToken: {
         type: String, default: null 
