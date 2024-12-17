@@ -115,7 +115,7 @@ export const verifyConnection = async (req, res) => {
                 console.error("Token refresh failed:", refreshError.message);
                 return res.status(401).json({ connected: false, message: "Token refresh failed." });
             }
-            return res.json({ connected: true, message: "Spotify connection verified." });
+            return res.json({ connected: true, message: "Spotify connection verified, tokens refreshed" });
         }
 
         // Test current access token validity
@@ -152,6 +152,31 @@ export const updateUserInfo = async (req, res) => {
     } catch (error) {
         console.error("Error updating user info:", error.message);
         res.status(500).json({ message: "Failed to update user info" });
+    }
+};
+
+// Disconnect the user from Spotify
+export const disconnectSpotify = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the user and update the relevant fields
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.spotifyConnected = false;
+        user.spotifyAccessToken = { token: null, obtainedAt: null };
+        user.spotifyRefreshToken = null;
+        user.spotifyUsername = null;
+
+        await user.save();
+
+        res.json({ message: "Spotify account disconnected successfully" });
+    } catch (error) {
+        console.error("Error disconnecting Spotify account:", error.message);
+        res.status(500).json({ message: "Failed to disconnect Spotify account" });
     }
 };
 
