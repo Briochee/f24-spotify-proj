@@ -136,3 +136,33 @@ export const setStatus = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+export const deleteUserAccount = async (req, res) => {
+    try {
+        const userId = req.user.id; // Authenticated user's ID
+        const { password } = req.body;
+
+        if (!password) {
+            return res.status(400).json({ success: false, message: "Password is required." });
+        }
+
+        // Find user by ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        // Verify password
+        if (user.password !== password) {
+            return res.status(401).json({ success: false, message: "Incorrect password." });
+        }
+
+        // Delete user
+        await User.findByIdAndDelete(userId);
+
+        return res.json({ success: true, message: "Account deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting user account:", error.message);
+        return res.status(500).json({ success: false, message: "Internal server error." });
+    }
+};
