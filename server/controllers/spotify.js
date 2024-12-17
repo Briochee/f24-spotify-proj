@@ -3,10 +3,12 @@ import jwt from "jsonwebtoken";
 import axios from "axios";
 import User from "../models/user.js";
 
+
+
 export const spotifyCallback = async (req, res) => {
     const { code } = req.body;
 
-    // console.log("Backend Received Authorization Code:", code);
+    // console.log("Authorization Code Received:", code);
 
     try {
         if (!code) {
@@ -24,53 +26,58 @@ export const spotifyCallback = async (req, res) => {
             }),
             { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
         );
+        // console.log("Token Response:", tokenResponse.data);
 
         const { access_token, refresh_token } = tokenResponse.data;
 
-        const profileResponse = await axios.get("https://api.spotify.com/v1/me", {
-            headers: { Authorization: `Bearer ${access_token}` },
-        });
+        await updateUserSpotifyData(access_token, refresh_token, req.user.id);
 
-        const spotifyUsername = profileResponse.data.display_name;
-
-        if (!req.user || !req.user.id) {
-            return res.status(401).json({ message: "Unauthorized. User not authenticated" });
+        res.json({ access_token, refresh_token });
+    } catch (error) {
+        if (error.response?.data?.error === "invalid_grant") {
+            console.error("Invalid authorization code or token already used");
+            return res.status(400).json({ message: "Authorization code invalid or reused. Please re-authenticate." });
         }
 
+        console.error("Failed to connect to Spotify:", error.message);
+
+        // Disconnect user in case of critical failure
         const user = await User.findById(req.user.id);
+        if (user) {
+            await disconnectSpotifyHelper(user);
+        }
+
+        res.status(500).json({ message: "Failed to connect to Spotify", error: error.response?.data || error.message });
+    }
+};
+
+export const updateUserSpotifyData = async (accessToken, refreshToken, userId) => {
+    try {
+        console.log("Access Token:", accessToken);
+        const profileResponse = await axios.get("https://api.spotify.com/v1/me", {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        console.log("Profile Response:", profileResponse.data); // Debug profile response
+        const spotifyUsername = profileResponse.data.display_name;
+
+        const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            throw new Error("User not found during Spotify callback");
         }
 
         user.spotifyConnected = true;
-        user.spotifyAccessToken = access_token;
-        user.spotifyRefreshToken = refresh_token;
+        user.spotifyAccessToken = { token: accessToken, obtainedAt: new Date() };
+        user.spotifyRefreshToken = refreshToken;
 
         if (user.spotifyUsername !== spotifyUsername) {
             user.spotifyUsername = spotifyUsername;
         }
 
         await user.save();
-
-        res.json({ access_token, refresh_token });
     } catch (error) {
-        if (error.response?.data?.error === "invalid_grant") {
-            console.error("Invalid authorization code or token already used");
-            return res.status(400).json({ message: "Invalid authorization code or token already used" });
-        }
-
-        console.error("Failed to connect to Spotify:", error.message);
-
-        // Disconnect user in case of any critical failure
-        const user = await User.findById(req.user.id);
-        if (user) {
-            user.spotifyConnected = false;
-            user.spotifyAccessToken = null;
-            user.spotifyRefreshToken = null;
-            await user.save();
-        }
-
-        res.status(500).json({ message: "Failed to connect to Spotify", error: error.response?.data || error.message });
+        console.error("Error updating Spotify data for user:", error.message);
+        throw error;
     }
 };
 
@@ -78,56 +85,64 @@ export const checkSpotifyConnection = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
 
-        if (!user || !user.spotifyConnected) {
+        if (!user || !user.spotifyConnected || !user.spotifyAccessToken.token) {
+            console.log("No valid Spotify connection found for user.");
             return res.json({ connected: false });
         }
 
+        const tokenAge = Date.now() - new Date(user.spotifyAccessToken.obtainedAt).getTime();
+        const ONE_HOUR = 3600000; // 1 hour
+
+        // Refresh token if it has expired
+        if (tokenAge >= ONE_HOUR) {
+            console.log("Spotify token expired. Attempting to refresh...");
+            const refreshed = await refreshSpotifyToken(user);
+
+            if (!refreshed) {
+                console.log("Failed to refresh Spotify token. Disconnecting user...");
+                user.spotifyConnected = false;
+                user.spotifyAccessToken = { token: null, obtainedAt: null };
+                user.spotifyRefreshToken = null;
+                await user.save();
+                return res.json({ connected: false });
+            }
+        }
+
+        // Validate Spotify access token
         try {
-            // Validate Spotify access token
             await axios.get("https://api.spotify.com/v1/me", {
                 headers: {
-                    Authorization: `Bearer ${user.spotifyAccessToken}`,
+                    Authorization: `Bearer ${user.spotifyAccessToken.token}`,
                 },
             });
 
-            return res.json({ connected: true });
+            console.log("Spotify access token is valid.");
+            return res.json({
+                connected: true,
+                accessToken: user.spotifyAccessToken.token,
+                refreshToken: user.spotifyRefreshToken,
+            });
         } catch (error) {
-            if (error.response?.status === 401) {
-                console.log("Spotify token invalid or expired. Attempting to refresh token...");
-
-                // Attempt to refresh the Spotify token
-                const refreshed = await refreshSpotifyToken(user);
-
-                if (refreshed) {
-                    // Retry connection check with refreshed token
-                    return await checkSpotifyConnection(req, res);
-                } else {
-                    console.log("Failed to refresh Spotify token. Disconnecting user...");
-                    user.spotifyConnected = false;
-                    user.spotifyAccessToken = null;
-                    user.spotifyRefreshToken = null;
-                    await user.save();
-                    return res.json({ connected: false });
-                }
+            if (error.response && error.response.status === 401) {
+                console.log("Error validating spotify access token: ", error);
             }
-
-            console.error("Error validating Spotify connection:", error.message);
-            return res.status(500).json({ message: "Error validating Spotify connection", error: error.message });
         }
     } catch (error) {
         console.error("Error checking Spotify connection:", error.message);
-        return res.status(500).json({ message: "Server error", error: error.message });
+        return res.status(500).json({ connected: false, message: "Server error", error: error.message });
     }
 };
 
-export const refreshSpotifyToken = async (req, res) => {
+export const refreshSpotifyToken = async (user) => {
     try {
-        const user = await User.findById(req.user.id);
         if (!user || !user.spotifyRefreshToken) {
-            return res.status(400).json({ message: "User not found or no refresh token available" });
+            console.error("No user or refresh token found for refreshing Spotify token.");
+            return false;
         }
 
-        const tokenResponse = await axios.post("https://accounts.spotify.com/api/token",
+        console.log("Refreshing Spotify token...");
+        const tokenResponse = await axios.post(
+            "https://accounts.spotify.com/api/token",
             new URLSearchParams({
                 grant_type: "refresh_token",
                 refresh_token: user.spotifyRefreshToken,
@@ -137,23 +152,53 @@ export const refreshSpotifyToken = async (req, res) => {
             { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
         );
 
-        user.spotifyAccessToken = tokenResponse.data.access_token;
+        user.spotifyAccessToken = {
+            token: tokenResponse.data.access_token,
+            obtainedAt: new Date(),
+        };
         await user.save();
 
         console.log("Spotify token refreshed successfully.");
-        return res.json({ message: "Spotify token refreshed successfully", access_token: tokenResponse.data.access_token });
+        return true;
     } catch (error) {
         console.error("Failed to refresh Spotify token:", error.message);
+        return false;
+    }
+};
 
-        // Disconnect the user from Spotify
+export const disconnectSpotify = async (req, res) => {
+    try {
         const user = await User.findById(req.user.id);
-        if (user) {
-            user.spotifyConnected = false;
-            user.spotifyAccessToken = null;
-            user.spotifyRefreshToken = null;
-            await user.save();
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        } else {
+            console.log("User found, disconnecting spotify");
         }
 
-        return res.status(500).json({ message: "Failed to refresh Spotify token", error: error.message });
+        user.spotifyConnected = false;
+        user.spotifyAccessToken = { token: null, obtainedAt: null };
+        user.spotifyRefreshToken = null;
+        user.spotifyUsername = null;
+        await user.save();
+
+        console.log("User successfully disconnected from Spotify.");
+        return res.json({ message: "Spotify account disconnected successfully" });
+    } catch (error) {
+        console.error("Failed to disconnect Spotify:", error.message);
+        return res.status(500).json({ message: "Server error", error: error.message });
     }
+};
+
+const disconnectSpotifyHelper = async (user) => {
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    user.spotifyConnected = false;
+    user.spotifyAccessToken = { token: null, obtainedAt: null };
+    user.spotifyRefreshToken = null;
+    user.spotifyUsername = null;
+
+    await user.save();
+    console.log("User successfully disconnected from Spotify.");
 };

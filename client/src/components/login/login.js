@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,16 @@ const Login = () => {
 
     const navigate = useNavigate();
 
+    // Clear local storage on page load
+    useEffect(() => {
+        // console.log("Clearing local storage...");
+        localStorage.removeItem("token");
+        localStorage.removeItem("spotifyAccessToken");
+        localStorage.removeItem("spotifyRefreshToken");
+        localStorage.removeItem("spotifyRedirectInitiated");
+        localStorage.removeItem("spotifyCallbackProcessed");
+    }, []);
+
     // Handle login
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,11 +30,12 @@ const Login = () => {
                 { email, password }
             );
     
-            // console.log("Login response:", response.data);
+            // Save token and redirect
             localStorage.setItem("token", response.data.token); // Save token
             navigate("/homepage"); // Redirect after successful login
         } catch (error) {
             console.error("Login failed:", error.response?.data || error.message);
+            alert(`Login Failed: ${error.response?.data.message}`);
         }
     };
 
@@ -48,6 +59,7 @@ const Login = () => {
             navigate("/homepage");
         } catch (err) {
             console.error("Registration Failed: ", err);
+            alert(`Registration Failed: ${err.response?.data.message}`);
         }
     };
 

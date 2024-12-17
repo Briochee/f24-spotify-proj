@@ -6,6 +6,7 @@ import {
     spotifyCallback,
     checkSpotifyConnection,
     refreshSpotifyToken,
+    disconnectSpotify,
 } from "../controllers/spotify.js";
 
 const router = express.Router();
@@ -13,5 +14,6 @@ const router = express.Router();
 router.post("/spotify-callback", verifyToken, spotifyCallback);
 router.get("/connection-status", verifyToken, checkSpotifyConnection);
 router.post("/refresh-spotify-token", verifyToken, refreshSpotifyToken);
+router.post("/disconnect", verifyToken, disconnectSpotify);
 
 export default router;

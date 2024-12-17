@@ -1,21 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const NavDropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            navigate("/login", { replace: true });
-        }
-    }, [navigate]);
-
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         localStorage.removeItem("token");
         navigate("/login", { replace: true });
-    };
+    }, [navigate]);
+
+    // Handle jwt expiry
+    const checkTokenValidity = useCallback(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            handleLogout();
+            return;
+        }
+
+        try {
+            const decoded = jwtDecode(token);
+            const currentTime = Date.now() / 1000; // Current time in seconds
+            if (decoded.exp < currentTime) {
+                console.warn("Token expired. Logging out...");
+                handleLogout();
+            }
+        } catch (error) {
+            console.error("Invalid token. Logging out...", error);
+            handleLogout();
+        }
+    }, [handleLogout]);
+
+    useEffect(() => {
+        checkTokenValidity();
+    }, [checkTokenValidity]);
 
     return (
         <div className="nav-dropdown">
