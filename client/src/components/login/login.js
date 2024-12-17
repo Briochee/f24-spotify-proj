@@ -25,6 +25,7 @@ const Login = () => {
             navigate("/homepage"); // Redirect after successful login
         } catch (error) {
             console.error("Login failed:", error.response?.data || error.message);
+            alert(`Login Failed: ${error.response?.data.message}`);
         }
     };
 
@@ -47,7 +48,8 @@ const Login = () => {
             // Navigate to the homepage after successful registration
             navigate("/homepage");
         } catch (err) {
-            console.error("Registration Failed: ", err);
+            console.error("Registration Failed: ", err.response?.data || err.message);
+            alert(`Registration Failed: ${err.response?.data.message}`);
         }
     };
 
