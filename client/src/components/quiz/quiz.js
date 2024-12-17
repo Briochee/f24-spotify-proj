@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
     getRandomPlaylistTracks,
     getPlaylistDetails,
@@ -7,6 +8,7 @@ import {
     playSongSnippet,
 } from "../spotify/spotifyFunctions";
 import NavDropdown from "../navigate/navigate.js";
+import GameBar from "../gamebar/gamebar.js";
 
 const Quiz = () => {
     const [playlistDetails, setPlaylistDetails] = useState({ name: "", image: null });
@@ -22,6 +24,8 @@ const Quiz = () => {
     const [difficulty, setDifficulty] = useState("easy");
     const [albumCoverRevealed, setAlbumCoverRevealed] = useState(false);
     const [isRevealed, setIsRevealed] = useState(false);
+    const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+    const [incorrectAnswersCount, setIncorrectAnswersCount] = useState(0);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -95,30 +99,32 @@ const Quiz = () => {
 
     const handleSubmit = () => {
         const currentSong = songs[currentQuestionIndex]?.track;
-    
+
         const correctSong = currentSong.name.toLowerCase();
         const correctArtist = currentSong.artists[0].name.toLowerCase();
-    
+
         const inputSong = userInput.song.toLowerCase().trim();
         const inputArtist = userInput.artist.toLowerCase().trim();
-    
+
         let scoreIncrement = 0;
-    
+
         if (inputSong === correctSong && inputArtist === correctArtist) {
-            scoreIncrement = isRevealed ? 2 : 10; // Reduced to 2 points if revealed
+            scoreIncrement = isRevealed ? 2 : 10; // Reduced points if revealed
+            setCorrectAnswersCount((prev) => prev + 1); // Increment correct answers
             setScoreMessage(`Score increased by ${scoreIncrement}!`);
         } else if (inputSong === correctSong || inputArtist === correctArtist) {
-            scoreIncrement = isRevealed ? 2 : 5; // Reduced to 2 points if revealed
+            scoreIncrement = isRevealed ? 2 : 5;
+            setCorrectAnswersCount((prev) => prev + 1); // Partial correct is also counted
             setScoreMessage(`Score increased by ${scoreIncrement}!`);
         } else {
+            setIncorrectAnswersCount((prev) => prev + 1); // Increment incorrect answers
             setScoreMessage(
                 `Incorrect! Correct song: "${currentSong.name}" by ${correctArtist}.`
             );
-            setInputsDisabled(true);
         }
-    
+
         setPoints((prevPoints) => prevPoints + scoreIncrement);
-    
+
         setTimeout(() => {
             setScoreMessage("");
             setAlbumCoverRevealed(false);
@@ -128,10 +134,36 @@ const Quiz = () => {
                 setUserInput({ song: "", artist: "" });
                 setInputsDisabled(false);
             } else {
-                setQuizOver(true);
+                handleQuizCompletion();
             }
         }, 1500);
     };
+
+    const handleQuizCompletion = async () => {
+        setQuizOver(true);
+
+        try {
+            const token = localStorage.getItem("token"); // JWT stored in local storage
+            const data = {
+                quizzesTaken: 1,
+                questionsAnswered: correctAnswersCount + incorrectAnswersCount,
+                lifetimeScore: points,
+                correctAnswers: correctAnswersCount,
+                incorrectAnswers: incorrectAnswersCount,
+            };
+
+            await axios.put("/api/quiz-history", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("Quiz history updated successfully!");
+        } catch (error) {
+            console.error("Error updating quiz history:", error.message);
+        }
+    };
+
 
     const handleAlbumReveal = () => {
         if (difficulty !== "hard") {
@@ -149,6 +181,7 @@ const Quiz = () => {
     return (
         <div>
             <NavDropdown />
+            <GameBar sessionScore={points} />
             <div className="container">
                 {loading ? (
                     <p>Loading quiz...</p>

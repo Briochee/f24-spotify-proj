@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserPlaylists, getPlaylistTracks } from "../spotify/spotifyFunctions.js";
 import NavDropdown from "../navigate/navigate.js";
+import GameBar from "../gamebar/gamebar.js";
 
 const QuizOptions = () => {
     const [playlists, setPlaylists] = useState([]);
@@ -62,6 +63,7 @@ const QuizOptions = () => {
     return (
         <>
             <NavDropdown />
+            <GameBar />
             <div className="container">
                 <h1>Choose a Playlist</h1>
                 {validPlaylists.length > 0 ? (
