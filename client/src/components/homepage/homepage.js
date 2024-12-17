@@ -96,7 +96,7 @@ const Homepage = () => {
             if (!token) {
                 console.error("No token found. User may not be logged in.");
                 setIsSpotifyConnected(false);
-                return;
+                return false;
             }
     
             const response = await axios.get(
@@ -106,7 +106,14 @@ const Homepage = () => {
                 }
             );
     
-            if (response.data.connected === true) {
+            const { connected, refreshed } = response.data;
+    
+            if (connected) {
+                // If tokens were refreshed, update localStorage
+                if (refreshed) {
+                    console.log("Access token refreshed. Updating tokens...");
+                    await fetchSpotifyConnectionStatus();
+                }
                 return true;
             } else {
                 return false;
