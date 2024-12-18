@@ -100,8 +100,16 @@ export const verifyConnection = async (req, res) => {
         const { token, obtainedAt } = user.spotifyAccessToken;
 
         // Check if the access token is older than 1 hour
-        const oneHourAgo = new Date(Date.now() - 3600 * 1000);
-        if (obtainedAt && new Date(obtainedAt) < oneHourAgo) {
+        // Get current local time (edge case because I am in a different country, crazy)
+        const currentUTC = new Date();
+        const localOffset = currentUTC.getTimezoneOffset() * 60 * 1000;
+        const currentLocalTime = new Date(currentUTC.getTime() - localOffset);
+
+        const oneHourAgo = new Date(currentLocalTime.getTime() - 3600 * 1000);
+        // console.log("Current local time: ", currentLocalTime, "\nOne hr ago: ", oneHourAgo);
+        // console.log("Obtain time: ", obtainedAt, "\nOne hr ago: ", oneHourAgo);
+
+        if (obtainedAt && new Date(obtainedAt).getTime() < oneHourAgo.getTime()) {
             console.log("Access token expired. Refreshing...");
 
             // Refresh the access token
@@ -149,9 +157,13 @@ export const updateUserInfo = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        const currentUTC = new Date();
+        const localOffset = currentUTC.getTimezoneOffset() * 60 * 1000;
+        const currentLocalTime = new Date(currentUTC.getTime() - localOffset);
+
         // Update user fields
         user.spotifyConnected = true;
-        user.spotifyAccessToken = { token: accessToken, obtainedAt: new Date() };
+        user.spotifyAccessToken = { token: accessToken, obtainedAt: currentLocalTime };
         user.spotifyRefreshToken = refreshToken;
 
         await user.save();
@@ -211,8 +223,12 @@ const refreshAccessToken = async (user) => {
 
         const { access_token } = response.data;
 
+        const currentUTC = new Date();
+        const localOffset = currentUTC.getTimezoneOffset() * 60 * 1000;
+        const currentLocalTime = new Date(currentUTC.getTime() - localOffset);
+
         // Update user's access token and obtained time
-        user.spotifyAccessToken = { token: access_token, obtainedAt: new Date() };
+        user.spotifyAccessToken = { token: access_token, obtainedAt: currentLocalTime };
         await user.save();
 
         console.log("Access token refreshed successfully.");
