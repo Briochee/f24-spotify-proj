@@ -1,0 +1,146 @@
+/* General container styling */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 50px;
+}
+
+/* Quiz Over */
+.quiz-over-container {
+    text-align: center;
+}
+
+/* Buttons */
+.quiz-button {
+    margin: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    font-size: 16px;
+}
+
+.quiz-button:hover {
+    background-color: #45a049;
+}
+
+/* Album Cover */
+.album-cover-container {
+    position: relative;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.album-cover {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+}
+
+.album-cover.blurred {
+    filter: blur(10px);
+}
+
+.album-cover.revealed {
+    filter: none;
+}
+
+/* Actions */
+.quiz-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.play-snippet-button,
+.reveal-button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+.play-snippet-button.disabled,
+.reveal-button.disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
+    color: #666;
+}
+
+.reveal-button:hover {
+    background-color: #bbb;
+}
+
+.play-snippet-button {
+    background-color: #1DB954;
+    color: white;
+}
+
+.play-snippet-button:hover {
+    background-color: #15893e;
+}
+
+/* Inputs */
+.quiz-inputs {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.song-input,
+.artist-input {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #1DB954;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+}
+
+.submit-button:hover,
+.submit-button.disabled {
+    background-color: #15893e;
+}
+
+/* Score Message */
+.message-container {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.score-message {
+    font-size: 15px;
+    color: #333;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+.album-cover.blur-easy {
+    filter: blur(5px);
+}
+
+.album-cover.blur-medium {
+    filter: blur(10px);
+}
+
+.album-cover.blur-hard {
+    filter: blur(25px);
+}
