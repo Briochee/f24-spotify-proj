@@ -8,10 +8,10 @@ const QuizOptions = () => {
     const [playlists, setPlaylists] = useState([]);
     const [validPlaylists, setValidPlaylists] = useState([]);
     const [selectedPlaylist, setSelectedPlaylist] = useState(null);
-    const [trackCount, setTrackCount] = useState(0);
     const [quizSizeOptions, setQuizSizeOptions] = useState([]);
-    const [selectedSize, setSelectedSize] = useState(null); // Fix: Added selectedSize state
+    const [selectedSize, setSelectedSize] = useState(null);
     const [difficulty, setDifficulty] = useState("easy");
+    const [sessionScore, setSessionScore] = useState(0);
 
     const QUIZ_SIZES = [10, 25, 50, 100];
     const DIFFICULTY_OPTIONS = ["easy", "medium", "hard"];
@@ -20,6 +20,8 @@ const QuizOptions = () => {
 
     useEffect(() => {
         fetchPlaylists();
+        const storedSessionScore = localStorage.getItem("sessionScore") || 0;
+        setSessionScore(storedSessionScore);
     }, []);
 
     const fetchPlaylists = async () => {
@@ -46,7 +48,6 @@ const QuizOptions = () => {
         }
 
         setSelectedPlaylist({ ...playlist, totalTracks });
-        setTrackCount(totalTracks);
 
         const availableSizes = QUIZ_SIZES.filter((size) => size <= totalTracks);
         setQuizSizeOptions(availableSizes);
@@ -63,7 +64,7 @@ const QuizOptions = () => {
     return (
         <>
             <NavDropdown />
-            <GameBar />
+            <GameBar sessionScore={sessionScore}/>
             <div className="container">
                 <h1>Choose a Playlist</h1>
                 {validPlaylists.length > 0 ? (

@@ -120,7 +120,7 @@ export const loadSpotifyPlayer = (accessToken) => {
             console.log("Spotify Web Playback SDK Ready");
 
             playerInstance = new window.Spotify.Player({
-                name: "Quiz Playback Player",
+                name: "SUBSONIC",
                 getOAuthToken: (cb) => cb(accessToken),
             });
 
@@ -155,11 +155,18 @@ export const loadSpotifyPlayer = (accessToken) => {
 };
 
 // play snipet
+const snippetStartCache = {}; // Starting point of snipet
+
 export const playSongSnippet = async (deviceId, trackUri, duration = 20000) => {
     const spotifyTokens = JSON.parse(localStorage.getItem("spotifyTokens"));
     const { accessToken } = spotifyTokens;
 
-    const randomStartTime = Math.floor(Math.random() * (30 - duration / 1000)) * 1000;
+    // Use cached starting point
+    let startPosition = snippetStartCache[trackUri];
+    if (!startPosition) {
+        startPosition = Math.floor(Math.random() * (30 - duration / 1000)) * 1000;
+        snippetStartCache[trackUri] = startPosition;
+    }
 
     try {
         await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
@@ -167,7 +174,7 @@ export const playSongSnippet = async (deviceId, trackUri, duration = 20000) => {
             headers: { Authorization: `Bearer ${accessToken}` },
             body: JSON.stringify({
                 uris: [trackUri],
-                position_ms: randomStartTime,
+                position_ms: startPosition,
             }),
         });
 

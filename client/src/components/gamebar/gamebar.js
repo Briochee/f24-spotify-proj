@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./gamebar.css"
 
-const GameBar = ({ sessionScore }) => {
+const GameBar = ({ sessionScore = 0, refreshKey }) => {
     const [userInfo, setUserInfo] = useState({ spotifyUsername: "", firstName: "" });
     const [allTimeScore, setAllTimeScore] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ const GameBar = ({ sessionScore }) => {
         };
     
         fetchGameBarData();
-    }, []);
+    }, [refreshKey]);
 
     if (loading) {
         return <div className="gamebar">Loading Game Info...</div>;
