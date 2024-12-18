@@ -1,6 +1,8 @@
 .gamebar {
     display: flex;
-    justify-content: space-between;
+    position: fixed;
+    width: 100vw;
+    justify-content: space-around;
     align-items: center;
     background-color: #1DB954;
     color: white;
