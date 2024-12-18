@@ -17,11 +17,13 @@ function App() {
             <Router>
               <div className="App">
                   <Routes>
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/homepage" element={<Home />} />
-                      <Route path="/quiz-options" element={<QuizOptions />} />
-                      <Route path="/quiz" element={<Quiz />} />
-                      <Route path="/profile" element={<Profile />} />
+                        <Route path="/" element={<Navigate to="/login" />} />
+
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/homepage" element={<Home />} />
+                        <Route path="/quiz-options" element={<QuizOptions />} />
+                        <Route path="/quiz" element={<Quiz />} />
+                        <Route path="/profile" element={<Profile />} />
                   </Routes>
               </div>
           </Router>
