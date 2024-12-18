@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,51 @@ import NavDropdown from "../navigate/navigate.js";
 const Profile = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+    const [quizHistory, setQuizHistory] = useState(null);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            setLoading(true);
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("You must be logged in.");
+                    navigate("/login");
+                    return;
+                }
+    
+                // Fetch user info
+                const userInfoResponse = await axios.get(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/users/user-info`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                setUserInfo(userInfoResponse.data.userInfo);
+    
+                // Fetch quiz history
+                const quizHistoryResponse = await axios.get(
+                    `${process.env.REACT_APP_BACKEND_URL}/api/users/quiz-history`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                setQuizHistory(quizHistoryResponse.data.quizHistory);
+            } catch (error) {
+                console.error("Error fetching profile data:", error.message);
+                alert("Failed to load profile data. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        fetchProfileData();
+    }, [navigate]);
 
     // Function to handle account deletion
     const handleDeleteAccount = async () => {
@@ -101,12 +146,39 @@ const Profile = () => {
             <NavDropdown />
             <div className="container">
                 <h1>Profile</h1>
-                <button onClick={handleDeleteAccount} disabled={loading}>
-                    {loading ? "Deleting Account..." : "Delete Account"}
-                </button>
-                <button onClick={handleDisconnectSpotify} disabled={loading}>
-                    {loading ? "Disconnecting Spotify..." : "Disconnect Spotify"}
-                </button>
+    
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        {userInfo && (
+                            <div>
+                                <h2>User Information</h2>
+                                <p><strong>Email:</strong> {userInfo.email}</p>
+                                <p><strong>Name:</strong> {userInfo.firstName + " " + userInfo.lastName}</p>
+                                <p><strong>Spotify Username:</strong> {userInfo.spotifyUsername}</p>
+                            </div>
+                        )}
+    
+                        {quizHistory && (
+                            <div>
+                                <h2>Quiz History</h2>
+                                <p><strong>Quizzes Taken:</strong> {quizHistory.quizzesTaken}</p>
+                                <p><strong>Questions Answered:</strong> {quizHistory.questionsAnswered}</p>
+                                <p><strong>Lifetime Score:</strong> {quizHistory.lifetimeScore}</p>
+                                <p><strong>Correct Answers:</strong> {quizHistory.correctAnswers}</p>
+                                <p><strong>Incorrect Answers:</strong> {quizHistory.incorrectAnswers}</p>
+                            </div>
+                        )}
+    
+                        <button onClick={handleDeleteAccount} disabled={loading}>
+                            {loading ? "Deleting Account..." : "Delete Account"}
+                        </button>
+                        <button onClick={handleDisconnectSpotify} disabled={loading}>
+                            {loading ? "Disconnecting Spotify..." : "Disconnect Spotify"}
+                        </button>
+                    </>
+                )}
             </div>
         </div>
     );
