@@ -45,7 +45,11 @@ const Homepage = () => {
     
         if (accessToken && refreshToken) {
             // Calculate expiry time (1 hour from now)
-            const expiryTime = Date.now() + 3600 * 1000; // 1 hour in milliseconds
+            const currentUTC = new Date();
+            const localOffset = currentUTC.getTimezoneOffset() * 60 * 1000;
+            const currentLocalTime = new Date(currentUTC.getTime() - localOffset);
+            
+            const expiryTime = currentLocalTime + 3600 * 1000; // 1 hour in milliseconds
     
             // Store tokens and expiration time in localStorage
             const spotifyTokens = {
@@ -143,9 +147,11 @@ const Homepage = () => {
     
             const { connected, accessToken, refreshToken } = response.data;
     
-            if (connected && accessToken?.token && accessToken?.date) {
+            if (connected && accessToken?.token && accessToken?.obtainedAt) {
                 // Extract access token and calculate expiry time based on the returned date
-                const expiryTime = new Date(accessToken.date).getTime() + 3600 * 1000;
+                const expiryTime = new Date(accessToken.obtainedAt).getTime() + 3600 * 1000;
+
+                // console.log("Access token date: ", accessToken.obtainedAt, "/nExpiry date: ", expiryTime);
     
                 // Store the tokens in localStorage
                 const spotifyTokens = {
