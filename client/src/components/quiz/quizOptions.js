@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserPlaylists, getPlaylistTracks } from "../spotify/spotifyFunctions.js";
 import NavDropdown from "../navigate/navigate.js";
@@ -9,17 +9,23 @@ const QuizOptions = () => {
     const [validPlaylists, setValidPlaylists] = useState([]);
     const [selectedPlaylist, setSelectedPlaylist] = useState(null);
     const [quizSizeOptions, setQuizSizeOptions] = useState([]);
-    const [selectedSize, setSelectedSize] = useState(10);
+    const [selectedSize, setSelectedSize] = useState(null);
     const [difficulty, setDifficulty] = useState("easy");
     const [sessionScore, setSessionScore] = useState(0);
 
-    const QUIZ_SIZES = [5, 10, 25, 50, 100];
+    const QUIZ_SIZES = [10, 25, 50, 100];
     const DIFFICULTY_OPTIONS = ["easy", "medium", "hard"];
 
     const navigate = useNavigate();
 
-    const fetchPlaylists = useCallback( async () => {
-        const data = await getUserPlaylists(navigate);
+    useEffect(() => {
+        fetchPlaylists();
+        const storedSessionScore = localStorage.getItem("sessionScore") || 0;
+        setSessionScore(storedSessionScore);
+    }, []);
+
+    const fetchPlaylists = async () => {
+        const data = await getUserPlaylists();
         const valid = [];
         for (const playlist of data) {
             const totalTracks = await getPlaylistTracks(playlist.id);
@@ -27,20 +33,7 @@ const QuizOptions = () => {
         }
         setPlaylists(data);
         setValidPlaylists(valid);
-    }, [navigate]);
-
-    useEffect(() => {
-        fetchPlaylists();
-        const token = localStorage.getItem("token");
-        const userId = JSON.parse(atob(token.split(".")[1])).id;
-
-        const storedSessionScore = JSON.parse(localStorage.getItem("sessionScore"));
-        if (storedSessionScore && storedSessionScore.userId === userId) {
-            setSessionScore(storedSessionScore.points);
-        } else {
-            setSessionScore(0);
-        }
-    }, [fetchPlaylists]);
+    };
 
     const handlePlaylistSelect = async (playlist) => {
         let totalTracks = playlist.totalTracks;
