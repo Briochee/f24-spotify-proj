@@ -28,6 +28,8 @@ export const registerUser = async (req, res) => {
             { expiresIn: "1h" }
         );
 
+        console.log(`${firstName + " " + lastName} has successfully registered`);
+
         res.status(201).json({
             message: "User registered successfully",
             token,
@@ -53,6 +55,8 @@ export const loginUser = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        
+        console.log(`${user.firstName + " " + user.lastName} has successfully logged in`);
 
         res.json({ message: "Login successful", token });
     } catch (error) {
@@ -76,6 +80,7 @@ export const isSpotifyConnected = async (req, res) => {
         if (user.spotifyConnected) {
             // console.log("USER CONNECTED");
             // Return connection status along with access and refresh tokens
+            console.log(`${user.firstName} is connected to spotify`);
             return res.json({
                 connected: true,
                 accessToken: user.spotifyAccessToken || null,
@@ -84,6 +89,7 @@ export const isSpotifyConnected = async (req, res) => {
         }
 
         // If not connected, only return connected status as false
+        console.log(`${user.firstName} is not connected to spotify`);
         res.json({ connected: false });
     } catch (error) {
         console.error("Error checking Spotify connection:", error.message);
@@ -135,6 +141,7 @@ export const deleteUserAccount = async (req, res) => {
         // Delete user
         await User.findByIdAndDelete(userId);
 
+        console.log(`${user.firstName + " " + user.lastName} has deleted their account`);
         return res.json({ success: true, message: "Account deleted successfully." });
     } catch (error) {
         console.error("Error deleting user account:", error.message);
@@ -162,6 +169,8 @@ export const updateQuizHistory = async (req, res) => {
         user.quizHistory.incorrectAnswers += incorrectAnswers;
 
         await user.save();
+
+        console.log(`${user.firstName} updated their score`);
 
         return res.json({ message: "Quiz history updated successfully", quizHistory: user.quizHistory });
     } catch (error) {
@@ -201,6 +210,7 @@ export const getUserInfo = async (req, res) => {
 
         // Extract user information
         const userInfo = {
+            userId: userId,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
