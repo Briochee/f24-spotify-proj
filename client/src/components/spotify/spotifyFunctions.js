@@ -1,9 +1,10 @@
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
+import { useNavigate } from "react-router-dom";
 
-// function to get user's Spotify playlists
-export const getUserPlaylists = async () => {
+// function to get user's Spotify playlists with retry logic
+export const getUserPlaylists = async ( navigate ) => {
     try {
-        // retrieve spotify tokens from localStorage
         const spotifyTokens = JSON.parse(localStorage.getItem("spotifyTokens"));
 
         if (!spotifyTokens || !spotifyTokens.accessToken) {
@@ -12,17 +13,36 @@ export const getUserPlaylists = async () => {
 
         const { accessToken } = spotifyTokens;
 
-        // axios request to fetch playlists
-        const response = await axios.get("https://api.spotify.com/v1/me/playlists", {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-        });
+        const maxRetries = 5;
+        let waitTime = 4000;
 
-        return response.data.items; // return the array of playlists
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                const response = await axios.get("https://api.spotify.com/v1/me/playlists", {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+        
+                return response.data.items; // Success
+            } catch (error) {
+                if (error.response?.status === 429) {
+                    const retryAfter = error.response.headers["retry-after"];
+                    let currentWaitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : waitTime;
+                    console.warn(`Rate limited. Retrying after ${currentWaitTime}ms...`);
+                    await new Promise((resolve) => setTimeout(resolve, currentWaitTime));
+                    waitTime *= 2; // Increase for exponential backoff
+                } else {
+                    throw error;
+                }
+            }
+        }
+
+        throw new Error("Failed to fetch playlists after multiple retries.");
     } catch (error) {
         console.error("Failed to fetch playlists:", error.response?.data || error.message);
+        navigate("/homepage");
         return [];
     }
 };
@@ -117,7 +137,7 @@ export const loadSpotifyPlayer = (accessToken) => {
     return new Promise((resolve, reject) => {
         // Define the global callback BEFORE loading the script
         window.onSpotifyWebPlaybackSDKReady = () => {
-            console.log("Spotify Web Playback SDK Ready");
+            // console.log("Spotify Web Playback SDK Ready");
 
             playerInstance = new window.Spotify.Player({
                 name: "SUBSONIC",
@@ -126,7 +146,7 @@ export const loadSpotifyPlayer = (accessToken) => {
 
             // Event listeners for the player
             playerInstance.addListener("ready", ({ device_id }) => {
-                console.log("Spotify Player is ready with Device ID:", device_id);
+                // console.log("Spotify Player is ready with Device ID:", device_id);
                 resolve(device_id);
             });
 
@@ -139,7 +159,6 @@ export const loadSpotifyPlayer = (accessToken) => {
             playerInstance.connect();
         };
 
-        // Load the SDK script dynamically if it hasn't been loaded already
         if (!document.getElementById("spotify-player-script")) {
             const script = document.createElement("script");
             script.id = "spotify-player-script";
