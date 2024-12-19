@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import NavDropdown from "../navigate/navigate.js";
 const Homepage = () => {
     const [isSpotifyConnected, setIsSpotifyConnected] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [verify, setVerify] = useState(true);
 
     const navigate = useNavigate();
 
@@ -16,17 +17,54 @@ const Homepage = () => {
         handleQueryStringTokens();
     }, []);
 
+    const verifySpotifyConnection = useCallback(async () => {
+        setVerify(false);
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found. User may not be logged in.");
+                setIsSpotifyConnected(false);
+                setVerify(true);
+                return false;
+            }
+    
+            const response = await axios.get(
+                `${process.env.REACT_APP_BACKEND_URL}/api/spotify/verify-connection`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+    
+            const { connected, refreshed } = response.data;
+    
+            if (connected) {
+                if (refreshed) {
+                    console.log("Access token refreshed. Updating tokens...");
+                    await fetchSpotifyConnectionStatus();
+                }
+                setVerify(true);
+                return true;
+            } else {
+                setVerify(true);
+                return false;
+            }
+        } catch (error) {
+            console.error("Failed to verify Spotify connection:", error.response?.data || error.message);
+            setVerify(true);
+            return false;
+        }
+    }, []);
+
     useEffect(() => {
         const initializeSpotifyConnection = async () => {
             try {
-                // Check connection status
                 const status = await fetchSpotifyConnectionStatus();
 
                 if (!status) {
                     setIsSpotifyConnected(false);
                     return;
                 }
-                // Verify the actual Spotify connection
+
                 const verified = await verifySpotifyConnection();
                 setIsSpotifyConnected(verified);
             } catch (error) {
@@ -36,7 +74,7 @@ const Homepage = () => {
         };
         initializeSpotifyConnection();
         // console.log("CONNECTION: ", isSpotifyConnected);
-    }, []);
+    }, [verifySpotifyConnection]);
 
     const handleQueryStringTokens = async () => {
         const params = new URLSearchParams(window.location.search);
@@ -91,40 +129,6 @@ const Homepage = () => {
             // Clean up query parameters from URL
             const newUrl = window.location.pathname;
             window.history.replaceState({}, document.title, newUrl);
-        }
-    };
-
-    const verifySpotifyConnection = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                console.error("No token found. User may not be logged in.");
-                setIsSpotifyConnected(false);
-                return false;
-            }
-    
-            const response = await axios.get(
-                `${process.env.REACT_APP_BACKEND_URL}/api/spotify/verify-connection`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-    
-            const { connected, refreshed } = response.data;
-    
-            if (connected) {
-                // If tokens were refreshed, update localStorage
-                if (refreshed) {
-                    console.log("Access token refreshed. Updating tokens...");
-                    await fetchSpotifyConnectionStatus();
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (error) {
-            console.error("Failed to verify Spotify connection:", error.response?.data || error.message);
-            return false;
         }
     };
 
@@ -214,7 +218,12 @@ const Homepage = () => {
             <div className="container">
                 <h1>Welcome to the Homepage</h1>
                 {!isSpotifyConnected ? (
-                    <button onClick={handleConnectSpotify}>Connect Your Spotify Account</button>
+                    <button
+                        onClick={handleConnectSpotify}
+                        disabled={loading || !verify}
+                    >
+                        {loading ? "Verifying..." : "Connect Your Spotify Account"}
+                    </button>
                 ) : (
                     <button onClick={() => navigate("/quiz-options")}>Song Quiz</button>
                 )}
