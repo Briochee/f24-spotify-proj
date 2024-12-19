@@ -51,6 +51,7 @@ const NavDropdown = () => {
                     <ul>
                         <li><button onClick={() => navigate("/homepage")}>Home</button></li>
                         <li><button onClick={() => navigate("/profile")}>Profile</button></li>
+                        <li><button onClick={() => navigate("/quiz-options")}>New Quiz</button></li>
                         <li><button onClick={handleLogout}>Log Out</button></li>
                     </ul>
                 </div>
