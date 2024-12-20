@@ -1,0 +1,109 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-information {
+    width: 100%;
+    border-radius: 20px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(0, 0, 0);
+    padding: 1rem;
+    margin: 10px 10px;
+}
+
+.user-information h2 {
+    font-weight: bold;
+}
+
+.quiz-info {
+    width: 100%;
+    border-radius: 20px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(0, 0, 0);
+    padding: 1rem;
+    margin: 10px 10px;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1rem;
+    align-items: center;
+    background-color: rgb(150, 150, 150);
+    border-radius: 20px;
+    margin: 10px 10px;
+}
+
+.delete-account {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #b91d1d;
+    color: white;
+    font-weight: bold;
+}
+
+.disconnect-spotify {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #1DB954;
+    color: white;
+    font-weight: bold;
+}
+
+.delete-account:hover {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #840f0f;
+    color: white;
+    font-weight: bold;
+    transform: scale(1.10);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.disconnect-spotify:hover {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #0e5f2a;
+    color: white;
+    font-weight: bold;
+    transform: scale(1.10);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+strong {
+    color: black;
+    font-weight: bold;
+}
+
+.username, .correct {
+    color:#1DB954;
+    font-weight: bold;
+}
+
+.wrong {
+    color: #b91d1d;
+    font-weight: bold;
+}
+
+.lifetime {
+    font-weight: bold;
+    color: rgb(220, 187, 0);
+}
