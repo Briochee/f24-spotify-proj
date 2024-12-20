@@ -144,7 +144,7 @@ const Profile = () => {
 
     return (
         <div>
-            <NavDropdown isDisabled={true} />
+            <NavDropdown />
             <div className="container">
                 <h1>Profile</h1>
     
