@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // function to get user's Spotify playlists with retry logic
-export const getUserPlaylists = async ( navigate ) => {
+export const getUserPlaylists = async (navigate) => {
     try {
         const spotifyTokens = JSON.parse(localStorage.getItem("spotifyTokens"));
 
@@ -18,21 +18,28 @@ export const getUserPlaylists = async ( navigate ) => {
 
         for (let attempt = 0; attempt < maxRetries; attempt++) {
             try {
-                const response = await axios.get("https://api.spotify.com/v1/me/playlists", {
+                const response = await axios.get("https://api.spotify.com/v1/me/playlists?limit=20", {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         "Content-Type": "application/json",
                     },
                 });
-        
-                return response.data.items; // Success
+
+                // Map the playlists to include image URLs
+                const playlists = response.data.items.map((playlist) => ({
+                    id: playlist.id,
+                    name: playlist.name,
+                    image: playlist.images?.[0]?.url || "",
+                }));
+
+                return playlists; // Return on success
             } catch (error) {
                 if (error.response?.status === 429) {
                     const retryAfter = error.response.headers["retry-after"];
                     let currentWaitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : waitTime;
                     console.warn(`Rate limited. Retrying after ${currentWaitTime}ms...`);
                     await new Promise((resolve) => setTimeout(resolve, currentWaitTime));
-                    waitTime *= 2; // Increase for exponential backoff
+                    waitTime *= 2; // Exponential backoff
                 } else {
                     throw error;
                 }
@@ -41,7 +48,7 @@ export const getUserPlaylists = async ( navigate ) => {
 
         throw new Error("Failed to fetch playlists after multiple retries.");
     } catch (error) {
-        console.error("Failed to fetch playlists:", error.response?.data || error.message);
+        console.error("Failed to fetch playlists with images:", error.response?.data || error.message);
         navigate("/homepage");
         return [];
     }
@@ -57,7 +64,7 @@ export const getPlaylistTracks = async (playlistId) => {
         const { accessToken } = spotifyTokens;
 
         const response = await axios.get(
-            `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=1`, // Fetching metadata only
+            `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=1`,
             {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -82,7 +89,7 @@ export const getRandomPlaylistTracks = async (playlistId, numberOfTracks) => {
         const { accessToken } = spotifyTokens;
 
         let allTracks = [];
-        let nextUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`;
+        let nextUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=20`;
 
         // Fetch all tracks from the playlist
         while (nextUrl) {
