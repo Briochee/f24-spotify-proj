@@ -1,0 +1,87 @@
+.credentials-form, .secondary-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.credentials-form div, .secondary-container div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.credentials-form label, .secondary-container label {
+    flex: 0 0 20%;
+    text-align: left;
+    align-items: center;
+}
+
+.credentials-form input, .secondary-container input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.lastName, .password {
+    margin-bottom: 15px;;
+}
+
+label {
+    font-weight: bold;
+}
+
+.login-page-container {
+    justify-self: center;
+    min-height: 50%;
+    height: 75%;
+    max-height: 75%;
+    min-width: 50%;
+    width: 75%;
+    max-width: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.credentials-form{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.login-submit-button, .login-switch-button {
+    border-radius: 10px;
+    margin: 10px;
+    height: 40px;
+    font-weight: bold;
+    border: none;
+}
+
+.login-submit-button:hover {
+    margin: 15px;
+    height: 30px;
+    font-weight: bold;
+    border: none;
+    background-color: #1DB954;
+    color: white;
+    transform: scale(1.05);
+}
+
+.login-switch-button:hover {
+    margin: 15px;
+    height: 30px;
+    font-weight: bold;
+    border: none;
+    background-color: rgb(81, 200, 240);
+    color: white;
+    transform: scale(1.05);
+}
