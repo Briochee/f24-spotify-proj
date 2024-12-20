@@ -49,14 +49,14 @@ const GameBar = ({ refreshKey }) => {
 
     return (
         <div className="gamebar">
-            <div>
-                <strong>Player:</strong>{" "}
-                {userInfo.spotifyUsername || userInfo.firstName || "Unknown User"}
+            <div className="username">
+                <strong>Player: </strong>
+                {userInfo.spotifyUsername || userInfo.firstName}
             </div>
-            <div>
+            <div className="alltime">
                 <strong>All-Time Score:</strong> {allTimeScore}
             </div>
-            <div>
+            <div className="session">
                 <strong>Session Score:</strong> {currentSessionScore}
             </div>
         </div>
