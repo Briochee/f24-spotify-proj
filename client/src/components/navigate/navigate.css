@@ -28,6 +28,8 @@ body {
 }
 
 .hamburger {
+    background-color: #004d29;
+    border: none;
     padding-right: 30px;
     padding-left: 10px;
     margin-left: auto;
@@ -50,8 +52,9 @@ body {
 .menu {
     display: none;
     position: absolute;
+    align-items: center;
     right: 50px;
-    top: 50%;
+    top: 44%;
     transform: translateY(-50%);
     background-color: #004d29;
     padding: 10px 20px;
