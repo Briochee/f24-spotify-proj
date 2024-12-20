@@ -1,0 +1,77 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.connect {
+    font-size: large;
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 50px;
+    padding: .25rem;
+    background-color: #1DB954;
+    color: white;
+    font-weight: bold;
+}
+
+.connect:hover {
+    font-size: large;
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 50px;
+    padding: .25rem;
+    background-color: #157a38;
+    color: white;
+    font-weight: bold;
+    transform: scale(1.10);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.image {
+    padding: .5rem;
+    height: 50px;
+    width: 50px;
+    content:url(./spotify.png);
+
+}
+
+.quiz {
+    font-size: larger;
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 50px;
+    padding: .25rem;
+    background-color: #1DB954;
+    color: white;
+    font-weight: bold;
+}
+
+.quiz:hover {
+    font-size: large;
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 50px;
+    padding: .25rem;
+    background-color: #157a38;
+    color: white;
+    font-weight: bold;
+    transform: scale(1.10);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
