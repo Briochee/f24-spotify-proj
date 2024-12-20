@@ -186,7 +186,7 @@ const Quiz = () => {
         const updatedSessionScore = currentSessionScore + increment;
         localStorage.setItem(`sessionScore_${userId}`, updatedSessionScore);
         setGameBarRefreshKey((prevKey) => prevKey + 1);
-        // console.log("New Points after verify: ", pointsRef.current);
+        console.log("New Points after verify: ", currentSessionScore);
     
         if (isCorrect) {
             setCorrectAnswersCount((prev) => prev + 1);
