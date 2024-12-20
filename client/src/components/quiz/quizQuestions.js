@@ -124,7 +124,7 @@ export const verifyAnswer = ({ currentSong, userInput, difficulty, isRevealed, }
                 ? (difficulty === "easy") ? 1 : (difficulty === "medium") ? 2 : 3 
                 : (difficulty === "easy") ? 1 : (difficulty === "medium") ? 3 : 5;
 
-        feedbackMessage = `Incorrect! ${penalty} points deducted.`;
+        feedbackMessage = `Incorrect! ${penalty} points deducted. ${songTitle} by ${artistTitles}`;
         // console.log("Score Increment: ", scoreIncrement, "\nPenalty: ", penalty)
         return { scoreIncrement, penalty, feedbackMessage, isCorrect };
     }
