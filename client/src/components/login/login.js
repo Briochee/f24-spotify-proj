@@ -64,13 +64,13 @@ const Login = () => {
                 <h2>{isLogin ? "Login" : "Sign Up"}</h2>
                 <form onSubmit={isLogin ? handleLogin : handleRegister}>
                     {!isLogin && (
-                        <div className="secondary-container">
+                        <div className="login-page-secondary-container">
                             <div>
                                 <label>First Name: </label>
                                 <input
                                     type="text"
                                     value={firstName}
-                                    className="firstName"
+                                    className="login-page-firstName"
                                     onChange={(e) => setFirstName(e.target.value)}
                                     required={!isLogin}
                                 />
@@ -80,20 +80,20 @@ const Login = () => {
                                 <input
                                     type="text"
                                     value={lastName}
-                                    className="lastName"
+                                    className="login-page-lastName"
                                     onChange={(e) => setLastName(e.target.value)}
                                     required={!isLogin}
                                 />
                             </div>
                         </div>
                     )}
-                    <div className="credentials-form">
+                    <div className="login-page-credentials-form">
                         <div>
                             <label>Email: </label>
                             <input
                                 type="email"
                                 value={email}
-                                className="email"
+                                className="login-page-email"
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
@@ -103,7 +103,7 @@ const Login = () => {
                             <input
                                 type="password"
                                 value={password}
-                                className="password"
+                                className="login-page-password"
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />

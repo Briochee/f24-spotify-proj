@@ -1,10 +1,10 @@
-.container {
+.homepage-container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.connect {
+.homepage-connect {
     font-size: large;
     border-radius: 15px;
     border: none;
@@ -19,7 +19,7 @@
     font-weight: bold;
 }
 
-.connect:hover {
+.homepage-connect:hover {
     font-size: large;
     border-radius: 15px;
     border: none;
@@ -36,7 +36,7 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.image {
+.homepage-image {
     padding: .5rem;
     height: 50px;
     width: 50px;
@@ -44,7 +44,7 @@
 
 }
 
-.quiz {
+.homepage-quiz {
     font-size: larger;
     border-radius: 15px;
     border: none;
@@ -59,7 +59,7 @@
     font-weight: bold;
 }
 
-.quiz:hover {
+.homepage-quiz:hover {
     font-size: large;
     border-radius: 15px;
     border: none;

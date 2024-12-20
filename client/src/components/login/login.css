@@ -1,23 +1,23 @@
-.credentials-form, .secondary-container {
+.login-page-credentials-form, .login-page-secondary-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.credentials-form div, .secondary-container div {
+.login-page-credentials-form div, .login-page-secondary-container div {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
 }
 
-.credentials-form label, .secondary-container label {
+.login-page-credentials-form label, .login-page-secondary-container label {
     flex: 0 0 20%;
     text-align: left;
     align-items: center;
 }
 
-.credentials-form input, .secondary-container input {
+.login-page-credentials-form input, .login-page-secondary-container input {
     flex: 1;
     padding: 0.5rem;
     border: 1px solid #ccc;
@@ -25,7 +25,7 @@
     box-sizing: border-box;
 }
 
-.lastName, .password {
+.login-page-lastName, .login-page-password {
     margin-bottom: 15px;;
 }
 
@@ -46,7 +46,7 @@ label {
     justify-content: space-evenly;
 }
 
-.credentials-form{
+.login-page-credentials-form{
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
@@ -59,6 +59,7 @@ form {
 }
 
 .login-submit-button, .login-switch-button {
+    width: 90%;
     border-radius: 10px;
     margin: 10px;
     height: 40px;

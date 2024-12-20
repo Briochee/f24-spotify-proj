@@ -1,42 +1,40 @@
-.container {
+.profile-page-container {
+    width: 90%;
     display: flex;
     flex-direction: column;
+    justify-self: center;
+    align-self: center;
 }
 
-.user-information {
-    width: 100%;
+.profile-page-user-information {
     border-radius: 20px;
     background-color: rgb(200, 200, 200);
     color: rgb(0, 0, 0);
-    padding: 1rem;
-    margin: 10px 10px;
+    margin: 10px;
 }
 
-.user-information h2 {
+.profile-page-user-information h2 {
     font-weight: bold;
 }
 
-.quiz-info {
-    width: 100%;
+.profile-page-quiz-info {
     border-radius: 20px;
     background-color: rgb(200, 200, 200);
     color: rgb(0, 0, 0);
-    padding: 1rem;
-    margin: 10px 10px;
+    margin: 10px;
 }
 
-.button-container {
-    width: 100%;
+.profile-page-button-container {
+    height: 50px;
     display: flex;
     justify-content: space-evenly;
-    padding: 1rem;
     align-items: center;
     background-color: rgb(150, 150, 150);
     border-radius: 20px;
-    margin: 10px 10px;
+    margin: 10px;
 }
 
-.delete-account {
+.profile-page-delete-account {
     border-radius: 15px;
     border: none;
     display: flex;
@@ -48,7 +46,7 @@
     font-weight: bold;
 }
 
-.disconnect-spotify {
+.profile-page-disconnect-spotify {
     border-radius: 15px;
     border: none;
     display: flex;
@@ -60,7 +58,7 @@
     font-weight: bold;
 }
 
-.delete-account:hover {
+.profile-page-delete-account:hover {
     border-radius: 15px;
     border: none;
     display: flex;
@@ -74,7 +72,7 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.disconnect-spotify:hover {
+.profile-page-disconnect-spotify:hover {
     border-radius: 15px;
     border: none;
     display: flex;
@@ -93,17 +91,17 @@ strong {
     font-weight: bold;
 }
 
-.username, .correct {
+.profile-page-username, .profile-page-correct {
     color:#1DB954;
     font-weight: bold;
 }
 
-.wrong {
+.profile-page-wrong {
     color: #b91d1d;
     font-weight: bold;
 }
 
-.lifetime {
+.profile-page-lifetime {
     font-weight: bold;
     color: rgb(220, 187, 0);
 }

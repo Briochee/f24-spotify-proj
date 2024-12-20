@@ -145,7 +145,7 @@ const Profile = () => {
     return (
         <div>
             <NavDropdown />
-            <div className="container">
+            <div className="profile-page-container">
                 <h1>Profile</h1>
     
                 {loading ? (
@@ -153,7 +153,7 @@ const Profile = () => {
                 ) : (
                     <>
                         {userInfo && (
-                            <div className="user-information">
+                            <div className="profile-page-user-information">
                                 <h2>User Information</h2>
                                 <p><strong>Email:</strong> {userInfo.email}</p>
                                 <p><strong>Name:</strong> {userInfo.firstName + " " + userInfo.lastName}</p>
@@ -162,20 +162,20 @@ const Profile = () => {
                         )}
     
                         {quizHistory && (
-                            <div className="quiz-info">
+                            <div className="profile-page-quiz-info">
                                 <h2>Quiz History</h2>
                                 <p><strong>Quizzes Taken:</strong> {quizHistory.quizzesTaken}</p>
                                 <p><strong>Questions Answered:</strong> {quizHistory.questionsAnswered}</p>
-                                <p className="lifetime"><strong>Lifetime Score:</strong> {quizHistory.lifetimeScore}</p>
-                                <p className="correct"><strong>Correct Answers:</strong> {quizHistory.correctAnswers}</p>
-                                <p className="wrong"><strong>Incorrect Answers:</strong> {quizHistory.incorrectAnswers}</p>
+                                <p className="profile-page-lifetime"><strong>Lifetime Score:</strong> {quizHistory.lifetimeScore}</p>
+                                <p className="profile-page-correct"><strong>Correct Answers:</strong> {quizHistory.correctAnswers}</p>
+                                <p className="profile-page-wrong"><strong>Incorrect Answers:</strong> {quizHistory.incorrectAnswers}</p>
                             </div>
                         )}
-                        <div className="button-container">
-                            <button className="delete-account" onClick={handleDeleteAccount} disabled={loading}>
+                        <div className="profile-page-button-container">
+                            <button className="profile-page-delete-account" onClick={handleDeleteAccount} disabled={loading}>
                                 {loading ? "Deleting Account..." : "Delete Account"}
                             </button>
-                            <button className="disconnect-spotify" onClick={handleDisconnectSpotify} disabled={loading}>
+                            <button className="profile-page-disconnect-spotify" onClick={handleDisconnectSpotify} disabled={loading}>
                                 {loading ? "Disconnecting Spotify..." : "Disconnect Spotify"}
                             </button>
                         </div>

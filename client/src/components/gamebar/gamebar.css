@@ -10,7 +10,7 @@
     margin-bottom: 20px;
 }
 
-.username, .alltime, .session {
+.gamebar-username, .gamebar-alltime, .gamebar-session {
     font-weight: bold;
     color: white;
 }

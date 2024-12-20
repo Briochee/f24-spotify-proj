@@ -215,17 +215,17 @@ const Homepage = () => {
         <>
             <NavDropdown />
             <h1>Homepage</h1>
-            <div className="container">
+            <div className="homepage-container">
                 {!isSpotifyConnected ? (
-                    <button className="connect"
+                    <button className="homepage-connect"
                         onClick={handleConnectSpotify}
                         disabled={loading || !verify}
                     >
-                        <img alt="spotify" className="image"></img>
+                        <img alt="spotify" className="homepage-image"></img>
                         {loading ? "Verifying..." : "Connect Your Spotify Account"}
                     </button>
                 ) : (
-                    <button className="quiz" onClick={() => navigate("/quiz-options")}>Song Quiz</button>
+                    <button className="homepage-quiz" onClick={() => navigate("/quiz-options")}>Song Quiz</button>
                 )}
             </div>
         </>
