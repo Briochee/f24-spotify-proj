@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./homepage.css"
 
 // website constants
 import NavDropdown from "../navigate/navigate.js";
@@ -212,20 +213,19 @@ const Homepage = () => {
 
     return (
         <>
-            <div>
-                <NavDropdown />
-            </div>
+            <NavDropdown />
+            <h1>Homepage</h1>
             <div className="container">
-                <h1>Welcome to the Homepage</h1>
                 {!isSpotifyConnected ? (
-                    <button
+                    <button className="connect"
                         onClick={handleConnectSpotify}
                         disabled={loading || !verify}
                     >
+                        <img alt="spotify" className="image"></img>
                         {loading ? "Verifying..." : "Connect Your Spotify Account"}
                     </button>
                 ) : (
-                    <button onClick={() => navigate("/quiz-options")}>Song Quiz</button>
+                    <button className="quiz" onClick={() => navigate("/quiz-options")}>Song Quiz</button>
                 )}
             </div>
         </>
