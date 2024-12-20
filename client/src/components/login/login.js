@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+import NavDropdown from "../navigate/navigate";
+
+import "./login.css";
+
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -54,54 +58,63 @@ const Login = () => {
     };
 
     return (
-        <div className="login">
-            <h2>{isLogin ? "Login" : "Sign Up"}</h2>
-            <form onSubmit={isLogin ? handleLogin : handleRegister}>
-                {!isLogin && (
-                    <>
+        <div>
+            <NavDropdown isDisabled={true}/>
+            <div className="login-page-container">
+                <h2>{isLogin ? "Login" : "Sign Up"}</h2>
+                <form onSubmit={isLogin ? handleLogin : handleRegister}>
+                    {!isLogin && (
+                        <div className="secondary-container">
+                            <div>
+                                <label>First Name: </label>
+                                <input
+                                    type="text"
+                                    value={firstName}
+                                    className="firstName"
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    required={!isLogin}
+                                />
+                            </div>
+                            <div>
+                                <label>Last Name: </label>
+                                <input
+                                    type="text"
+                                    value={lastName}
+                                    className="lastName"
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    required={!isLogin}
+                                />
+                            </div>
+                        </div>
+                    )}
+                    <div className="credentials-form">
                         <div>
-                            <label>First Name:</label>
+                            <label>Email: </label>
                             <input
-                                type="text"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                required={!isLogin}
+                                type="email"
+                                value={email}
+                                className="email"
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
                         </div>
                         <div>
-                            <label>Last Name:</label>
+                            <label>Password: </label>
                             <input
-                                type="text"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                required={!isLogin}
+                                type="password"
+                                value={password}
+                                className="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
                         </div>
-                    </>
-                )}
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">{isLogin ? "Login" : "Sign Up"}</button>
-            </form>
-            <button onClick={() => setIsLogin(!isLogin)}>
-                Switch to {isLogin ? "Sign Up" : "Login"}
-            </button>
+                    </div>
+                    <button className="login-submit-button" type="submit">{isLogin ? "Login" : "Sign Up"}</button>
+                </form>
+                <button className="login-switch-button" onClick={() => setIsLogin(!isLogin)}>
+                    Switch to {isLogin ? "Sign Up" : "Login"}
+                </button>
+            </div>
         </div>
     );
 };
