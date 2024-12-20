@@ -88,6 +88,17 @@ const Quiz = () => {
     }, [isConnectedToPlayback]);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        const userId = JSON.parse(atob(token.split(".")[1])).id;
+        const storedSessionScore = parseInt(localStorage.getItem(`sessionScore_${userId}`), 10);
+        if (isNaN(storedSessionScore)){
+            localStorage.removeItem(`sessionScore_${userId}`);
+            localStorage.setItem(`sessionScore_${userId}`, "0");
+            console.log("Session score was invalid. Reset to 0.");
+        }
+    });
+
+    useEffect(() => {
         const params = new URLSearchParams(location.search);
         const playlistId = params.get("playlistId");
         const quizSizeParam = params.get("quizSize");
