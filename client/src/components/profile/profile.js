@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "./profile.css";
 
 // website constants
 import NavDropdown from "../navigate/navigate.js";
@@ -152,31 +153,32 @@ const Profile = () => {
                 ) : (
                     <>
                         {userInfo && (
-                            <div>
+                            <div className="user-information">
                                 <h2>User Information</h2>
                                 <p><strong>Email:</strong> {userInfo.email}</p>
                                 <p><strong>Name:</strong> {userInfo.firstName + " " + userInfo.lastName}</p>
-                                <p><strong>Spotify Username:</strong> {userInfo.spotifyUsername}</p>
+                                <p className="username"><strong>Spotify Username:</strong> {userInfo.spotifyUsername}</p>
                             </div>
                         )}
     
                         {quizHistory && (
-                            <div>
+                            <div className="quiz-info">
                                 <h2>Quiz History</h2>
                                 <p><strong>Quizzes Taken:</strong> {quizHistory.quizzesTaken}</p>
                                 <p><strong>Questions Answered:</strong> {quizHistory.questionsAnswered}</p>
-                                <p><strong>Lifetime Score:</strong> {quizHistory.lifetimeScore}</p>
-                                <p><strong>Correct Answers:</strong> {quizHistory.correctAnswers}</p>
-                                <p><strong>Incorrect Answers:</strong> {quizHistory.incorrectAnswers}</p>
+                                <p className="lifetime"><strong>Lifetime Score:</strong> {quizHistory.lifetimeScore}</p>
+                                <p className="correct"><strong>Correct Answers:</strong> {quizHistory.correctAnswers}</p>
+                                <p className="wrong"><strong>Incorrect Answers:</strong> {quizHistory.incorrectAnswers}</p>
                             </div>
                         )}
-    
-                        <button onClick={handleDeleteAccount} disabled={loading}>
-                            {loading ? "Deleting Account..." : "Delete Account"}
-                        </button>
-                        <button onClick={handleDisconnectSpotify} disabled={loading}>
-                            {loading ? "Disconnecting Spotify..." : "Disconnect Spotify"}
-                        </button>
+                        <div className="button-container">
+                            <button className="delete-account" onClick={handleDeleteAccount} disabled={loading}>
+                                {loading ? "Deleting Account..." : "Delete Account"}
+                            </button>
+                            <button className="disconnect-spotify" onClick={handleDisconnectSpotify} disabled={loading}>
+                                {loading ? "Disconnecting Spotify..." : "Disconnect Spotify"}
+                            </button>
+                        </div>
                     </>
                 )}
             </div>
