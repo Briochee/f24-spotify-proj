@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import "./navigate.css";
 
-const NavDropdown = () => {
+const NavDropdown = ({isDisabled = false}) => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ const NavDropdown = () => {
 
     return (
         <div className="navbar">
-            <div className="title" onClick={() => navigate("/homepage")}>
+            <div className="title" disabled={!isDisabled} onClick={() => navigate("/homepage")}>
                 SUBSONIC
             </div>
             <div className="menu-portion">
@@ -55,11 +55,11 @@ const NavDropdown = () => {
                         <li><button onClick={handleLogout}>Log Out</button></li>
                     </ul>
                 </div>
-                <div className="hamburger" onClick={toggleMenu}>
+                <button className="hamburger" disabled={isDisabled} onClick={toggleMenu}>
                     <span></span>
                     <span></span>
                     <span></span>
-                </div>
+                </button>
             </div>
             
         </div>
