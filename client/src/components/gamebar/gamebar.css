@@ -9,3 +9,8 @@
     padding: 10px 20px;
     margin-bottom: 20px;
 }
+
+.username, .alltime, .session {
+    font-weight: bold;
+    color: white;
+}
