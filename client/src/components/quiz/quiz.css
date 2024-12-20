@@ -1,151 +1,109 @@
-/* General container styling */
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    padding-top: 50px;
-}
-
-/* Quiz Over */
-.quiz-over-container {
-    text-align: center;
-}
-
-/* Buttons */
-.quiz-button {
-    margin: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    border: none;
-    background-color: #4caf50;
-    color: white;
-    font-size: 16px;
-}
-
-.quiz-button:hover {
-    background-color: #45a049;
-}
-
-/* Album Cover */
-.album-cover-container {
-    position: relative;
-    text-align: center;
-    margin-top: 20px;
-}
-
-.album-cover {
-    width: 250px;
-    height: 250px;
-    margin: 0 auto;
-    background-size: cover;
-    background-position: center;
-    border-radius: 10px;
-}
-
-.album-cover.blurred {
-    filter: blur(10px);
-}
-
-.album-cover.revealed {
-    filter: none;
-}
-
-/* Actions */
-.quiz-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.play-snippet-button,
-.reveal-button {
-    margin: 10px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-}
-
-.play-snippet-button.disabled,
-.reveal-button.disabled {
-    cursor: not-allowed;
-    background-color: #ccc;
-    color: #666;
-}
-
-.reveal-button:hover {
-    background-color: #bbb;
-}
-
-.play-snippet-button {
-    background-color: #1DB954;
-    color: white;
-}
-
-.play-snippet-button:hover {
-    background-color: #15893e;
-}
-
-/* Inputs */
-.quiz-inputs {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.song-input,
-.artist-input {
-    display: block;
-    width: 100%;
-    margin: 10px auto;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.submit-button {
-    padding: 10px 20px;
-    background-color: #1DB954;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-}
-
-.submit-button:hover,
-.submit-button.disabled {
-    background-color: #15893e;
-}
-
-/* Score Message */
-.message-container {
-    width: 200px;
-    max-height: 75px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    overflow: hidden;
+    flex-direction: column;
 }
 
-.score-message {
-    font-size: 15px;
-    color: #333;
-    word-wrap: break-word;
-    max-width: 100%;
+.user-information {
+    width: 100%;
+    border-radius: 20px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(0, 0, 0);
+    padding: 1rem;
+    margin: 10px 10px;
 }
 
-.album-cover.blur-easy {
-    filter: blur(5px);
-}
-
-.album-cover.blur-medium {
-    filter: blur(10px);
-}
-
-.album-cover.blur-hard {
-    filter: blur(25px);
-}
-
-p {
+.user-information h2 {
     font-weight: bold;
+}
+
+.quiz-info {
+    width: 100%;
+    border-radius: 20px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(0, 0, 0);
+    padding: 1rem;
+    margin: 10px 10px;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1rem;
+    align-items: center;
+    background-color: rgb(150, 150, 150);
+    border-radius: 20px;
+    margin: 10px 10px;
+}
+
+.delete-account {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #b91d1d;
+    color: white;
+    font-weight: bold;
+}
+
+.disconnect-spotify {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #1DB954;
+    color: white;
+    font-weight: bold;
+}
+
+.delete-account:hover {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #840f0f;
+    color: white;
+    font-weight: bold;
+    transform: scale(1.10);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.disconnect-spotify:hover {
+    border-radius: 15px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    min-width: 150px;
+    padding: .25rem;
+    background-color: #0e5f2a;
+    color: white;
+    font-weight: bold;
+    transform: scale(1.10);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+strong {
+    color: black;
+    font-weight: bold;
+}
+
+.username, .correct {
+    color:#1DB954;
+    font-weight: bold;
+}
+
+.wrong {
+    color: #b91d1d;
+    font-weight: bold;
+}
+
+.lifetime {
+    font-weight: bold;
+    color: rgb(220, 187, 0);
 }
