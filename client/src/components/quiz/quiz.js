@@ -195,7 +195,10 @@ const Quiz = () => {
         }
     
         setScoreMessage(feedbackMessage);
-        setTimeout(moveToNextQuestion, 1500);
+        setTimeout(() => {
+            setScoreMessage("");
+            moveToNextQuestion();
+        }, 1750);
     };
 
     const handleRetry = async () => {
