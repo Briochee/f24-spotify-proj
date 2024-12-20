@@ -1,14 +1,14 @@
-.container {
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, 0);
+.quiz-options-container {
+    justify-self: center;
+    align-self: center;
+    position: relative;
     width: 80%;
     overflow-y: auto;
     border-radius: 10px;
-    padding: 1rem;
+    padding: 50px;
 }
 
-.scroll-container {
+.quiz-options-scroll-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -21,26 +21,26 @@
     border-radius: 10px;
 }
 
-.scroll-container::-webkit-scrollbar {
+.quiz-options-scroll-container::-webkit-scrollbar {
     height: 10px;
 }
 
-.scroll-container::-webkit-scrollbar-track {
+.quiz-options-scroll-container::-webkit-scrollbar-track {
     background: #dfdfdf;
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
 }
 
-.scroll-container::-webkit-scrollbar-thumb {
+.quiz-options-scroll-container::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 10px;
 }
 
-.scroll-container::-webkit-scrollbar-thumb:hover {
+.quiz-options-scroll-container::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
-.playlist-card {
+.quiz-options-playlist-card {
     flex-shrink: 0;
     width: 150px; /* adjust width */
     text-align: center;
@@ -52,18 +52,18 @@
 }
 
 
-.playlist-card:hover {
+.quiz-options-playlist-card:hover {
     transform: scale(1.05);
 }
 
-.playlist-image {
+.quiz-options-playlist-image {
     width: 150px;
     height: 150px; /* adjust image size */
     object-fit: cover;
     border-radius: 10px;
 }
 
-.playlist-name {
+.quiz-options-playlist-name {
     display: flex;
     font-weight: bold;
     margin-top: 5px; /* adjust spacing */
@@ -75,7 +75,7 @@
     -webkit-box-orient: vertical;
 }
 
-.size-container {
+.quiz-options-size-container {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -86,7 +86,7 @@
     margin: auto;
 }
 
-.size-button {
+.quiz-options-size-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -100,19 +100,19 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.size-button:hover {
+.quiz-options-size-button:hover {
     background-color: rgb(85, 85, 85);
     color: white;
     transform: scale(1.05);
 }
 
-.size-button.selected {
+.quiz-options-size-button.selected {
     background-color: #1db954;
     color: white;
     font-weight: bold;
 }
 
-.difficulty-container {
+.quiz-options-difficulty-container {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -123,7 +123,7 @@
     margin: auto;
 }
 
-.difficulty-button {
+.quiz-options-difficulty-button {
     min-width: 75px;
     display: flex;
     align-items: center;
@@ -138,25 +138,26 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.difficulty-button:hover {
+.quiz-options-difficulty-button:hover {
     background-color: #555;
     transform: scale(1.05);
     color: white;
 }
 
-.difficulty-button.selected {
+.quiz-options-difficulty-button.selected {
     background-color: #1db954;
     color: white;
     font-weight: bold;
 }
 
-.start-button {
+.quiz-options-start-button {
     min-width: 100px;
     min-height: 30px;
     display: flex;
     justify-content: center;
     justify-self: center;
     border-radius: 20px;
+    padding: 15px;
     align-items: center;
     border: none;
     background-color: rgb(160, 160, 160);
@@ -164,7 +165,7 @@
     font-weight: bold;
 }
 
-.start-button:hover {
+.quiz-options-start-button:hover {
     background-color: #1db954;
     color: white;
 }

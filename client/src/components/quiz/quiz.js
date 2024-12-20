@@ -268,7 +268,8 @@ const Quiz = () => {
     return (
         <div>
             <NavDropdown />
-            <GameBar refreshKey={gameBarRefreshKey} />            <div className="container">
+            <GameBar refreshKey={gameBarRefreshKey} />            
+            <div className="quiz-container">
                 {loading ? (
                     <p>Loading quiz...</p>
                 ) : quizOver ? (
@@ -319,7 +320,7 @@ const Quiz = () => {
                                 </button>
                             )}
                         </div>
-                        <div className="message-container">
+                        <div className="quiz-message-container">
                             {scoreMessage && <p className="score-message">{scoreMessage}</p>}
                         </div>
     

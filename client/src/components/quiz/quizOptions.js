@@ -137,14 +137,14 @@ const QuizOptions = () => {
         <>
             <NavDropdown />
             <GameBar sessionScore={sessionScore} />
-            <div className="container">
+            <div className="quiz-options-container">
                 <h1>Choose a Playlist</h1>
                 {/* Playlists */}
                 {validPlaylists.length > 0 ? (
-                    <div className="scroll-container" ref={scrollContainerRef}>
+                    <div className="quiz-options-scroll-container" ref={scrollContainerRef}>
                         {validPlaylists.map((playlist) => (
                             <div
-                                className="playlist-card"
+                                className="quiz-options-playlist-card"
                                 key={playlist.id}
                                 onClick={() => handlePlaylistSelect(playlist)}
                                 style={{
@@ -156,9 +156,9 @@ const QuizOptions = () => {
                                 <img
                                     src={playlist.image}
                                     alt={playlist.name}
-                                    className="playlist-image"
+                                    className="quiz-options-playlist-image"
                                 />
-                                <span className="playlist-name">{playlist.name}</span>
+                                <span className="quiz-options-playlist-name">{playlist.name}</span>
                             </div>
                         ))}
                     </div>
@@ -167,7 +167,7 @@ const QuizOptions = () => {
                 )}
 
                 {selectedPlaylistName && (
-                    <div className="selected-playlist-name">
+                    <div className="quiz-options-selected-playlist-name">
                         <h3>Selected Playlist: {selectedPlaylistName}</h3>
                     </div>
                 )}
@@ -176,10 +176,10 @@ const QuizOptions = () => {
                 {selectedPlaylist && (
                     <>
                         <h2>Select Quiz Size</h2>
-                        <div className="size-container">
+                        <div className="quiz-options-size-container">
                             {quizSizeOptions.map((size) => (
                                 <button
-                                    className={`size-button ${selectedSize === size ? "selected" : ""}`}
+                                    className={`quiz-options-size-button ${selectedSize === size ? "selected" : ""}`}
                                     key={size}
                                     onClick={() => setSelectedSize(size)}
                                 >
@@ -194,10 +194,10 @@ const QuizOptions = () => {
                 {selectedSize && (
                     <>
                         <h2>Select Difficulty</h2>
-                        <div className="difficulty-container">
+                        <div className="quiz-options-difficulty-container">
                             {DIFFICULTY_OPTIONS.map((level) => (
                                 <button
-                                    className={`difficulty-button ${difficulty === level ? "selected" : ""}`}
+                                    className={`quiz-options-difficulty-button ${difficulty === level ? "selected" : ""}`}
                                     key={level}
                                     onClick={() => setDifficulty(level)}
                                 >
@@ -206,7 +206,7 @@ const QuizOptions = () => {
                             ))}
                         </div>
                         <br></br>
-                        <button className="start-button" onClick={handleStartQuiz}>Start Quiz</button>
+                        <button className="quiz-options-start-button" onClick={handleStartQuiz}>Start Quiz</button>
                     </>
                 )}
             </div>
